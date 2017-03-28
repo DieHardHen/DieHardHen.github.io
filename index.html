@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Weather</title>
+		<link rel="stylesheet" href="js/jquery/jquery-ui.min.css">
+		<link rel="stylesheet" href="js/jquery/jquery-ui.structure.min.css">
+		<link rel="stylesheet" href="js/jquery/jquery-ui.theme.min.css">
+		<script type="text/javascript" src="js/jquery/jquery-3.2.0.min.js"></script>
+		<script type="text/javascript" src="js/jquery/jquery-ui.min.js"></script>
+		<style>
+		  .wrapper {
+				width: 400px;
+		  }
+		</style>
+	</head>
+	<body>
+		<script>
+
+			getAPIUrl = (city, country) => {
+				return "https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""+city+", "+country+"\") and u='c'&format=json&env=store://datatables.org/alltableswithkeys";
+			}
+
+			$( () => {
+				$("#accordion").accordion();
+			} );
+
+			addCity = (title, city, country) => {
+				$.getJSON(getAPIUrl(city, country), (data) => {
+					$("#accordion").append("<h3>"+title+"</h3>");
+					$("#accordion").append("<div>Температура: "+data.query.results.channel.item.condition.temp+" С</br>Ветер: "+
+					data.query.results.channel.wind.speed+" км/ч</div>");
+					$( "#accordion" ).accordion( "refresh" );
+				});
+
+			}
+
+			addCity("Погода в Воронеже", "Voronezh", "ru");
+			addCity("Погода в Москве", "Moskow", "ru");
+			addCity("Погода в Сочи", "sochi", "ru");
+			addCity("Погода в Лондоне", "London", "uk");
+			addCity("Погода в Вашингтоне", "Washington", "us");
+
+
+		</script>
+		<div class="wrapper ">
+			<div id="accordion">
+			</div>
+		</div>
+
+	</body>
+</html>
